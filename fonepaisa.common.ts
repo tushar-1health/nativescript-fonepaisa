@@ -7,7 +7,7 @@ export class Common extends Observable {
 
   constructor() {
     super();
-    this.message = Utils.SUCCESS_MSG();
+    // this.message = Utils.SUCCESS_MSG();
   }
 }
 
@@ -23,3 +23,22 @@ export class Utils {
   }
 }
 
+
+export declare class Fonepaisa {
+    // private _observer;
+    // private _observerActive;
+    // private _currentVolume;
+    // private _scanner;
+    // constructor();
+    // private _hasCameraPermission;
+    // private _hasDeniedCameraPermission;
+    // private _addVolumeObserver;
+    // private _removeVolumeObserver;
+    // private _enableTorch;
+    // private _disableTorch;
+    // available(): Promise<boolean>;
+    // hasCameraPermission(): Promise<boolean>;
+    // requestCameraPermission(): Promise<boolean>;
+    // stop(): Promise<any>;
+    pay(arg);
+}

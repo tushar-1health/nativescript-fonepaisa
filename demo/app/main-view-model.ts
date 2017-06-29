@@ -9,6 +9,12 @@ export class HelloWorldModel extends Observable {
     super();
 
     this.fonepaisa = new Fonepaisa();
-    this.message = this.fonepaisa.message;
+  }
+
+  public pay(){
+    console.log('in component');
+    this.fonepaisa.pay({}).then(function(result){
+      console.dir(result);
+    });
   }
 }

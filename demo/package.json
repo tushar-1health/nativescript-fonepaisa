@@ -2,16 +2,16 @@
   "nativescript": {
     "id": "org.nativescript.demo",
     "tns-ios": {
-      "version": "2.5.0"
+      "version": "3.0.0"
     },
     "tns-android": {
-      "version": "2.5.0"
+      "version": "3.0.0"
     }
   },
   "dependencies": {
+    "nativescript-fonepaisa": "file:///home/tushararth/Sites/fonepaisa",
     "nativescript-theme-core": "^1.0.2",
     "nativescript-unit-test-runner": "^0.3.4",
-    "nativescript-fonepaisa": "file:..",
     "tns-core-modules": "~2.5.2"
   },
   "devDependencies": {
