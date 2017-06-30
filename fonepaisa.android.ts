@@ -2,6 +2,8 @@ import { Common } from './fonepaisa.common';
 import * as appModule from "application";
 import * as utils from "utils/utils";
 declare let com, android, fonepaisa, org, System: any;
+var http = require("http");
+var fetchModule = require("fetch");
 
 export class Fonepaisa extends Common {
     public FONEPAISAPG_RET_CODE = 1;
@@ -16,7 +18,7 @@ export class Fonepaisa extends Common {
 
     public pay(args) {
         console.log('in Fonepaisa@pay');
-        console.dir(fonepaisa.com.fonepaisapg_sdk.fonePaisaPG);
+        // console.dir(fonepaisa.com.fonepaisapg_sdk.fonePaisaPG);
         console.log('fonepaisa.com.fonepaisapg_sdk.fonePaisaPG');
         let self = this;
         return new Promise((resolve, reject) => { 
@@ -26,6 +28,16 @@ export class Fonepaisa extends Common {
             // TODO
             // Change it to more nativescript way as opposed to Java.
             let API_KEY = "08Z1782051U62BY9OUGW4XM67GF2004";
+            let payload = {
+                "id": "FPTEST",
+                "merchant_id": "FPTEST",
+                "merchant_display": "fonepaisa",
+                "invoice": new Date().getMilliseconds() + "FP",
+                "mobile_no": "720485",
+                "email": "",
+                "invoice_amt": "1.00"
+            };
+            console.log(payload['id']);
             let json_to_be_sent = new org.json.JSONObject();
             try {
                 json_to_be_sent.put("id", "FPTEST");    // Mandatory .. FPTEST is just for testing it has to be changed before going to production
@@ -39,8 +51,9 @@ export class Fonepaisa extends Common {
                 json_to_be_sent.put("payment_types", "");    // not mandatory . this is to restrict the payment types
                 json_to_be_sent.put("addnl_info", "");          // pass any addnl data which u need to get baack
                     //input for signing  API_KET#id#merchant_id#invoice#amount
-                let signed_ip = API_KEY+"#"+json_to_be_sent.getString("id")+"#"+json_to_be_sent.getString("merchant_id")+"#"+json_to_be_sent.getString("invoice")+"#"+json_to_be_sent.getString("invoice_amt")+"#";
+                let signed_ip = API_KEY+"#"+payload["id"]+"#"+payload["merchant_id"]+"#"+payload["invoice"]+"#"+payload["invoice_amt"]+"#";
                 console.log('2');
+                console.log(signed_ip);
                 
                 /* *********************************************************************************************
                 *               TODO                                                                           *
@@ -48,14 +61,44 @@ export class Fonepaisa extends Common {
                 *    Please do the signing on your server side . and pass the signed message in the json       *
                 *                                                                                              *
                 ************************************************************************************************/
+                // console.dir(http);
+                // let signed_msg = '';
+                try {
+                    http.request({
+                        url: "https://arthseed-dev.clu.pw/sign.php",
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        content: JSON.stringify({ hashinput: signed_ip })
+                    }).then(function (response) {
+                        console.log('success from api');
+                        console.dir(response);
+                        var result = response.content.toJSON();
+                        console.log(result.res);
+                        // payload["sign"] = result.res;
+                        // payload["Environment"] = self.Test_Environment;  //mandatory   //Change it based on the environment you are using
+                        console.log('3');
+                        json_to_be_sent.put("sign", result.res);
+                        json_to_be_sent.put("Environment", self.Test_Environment);  //mandatory   //Change it based on the environment you are using
+                        intent.putExtra("data",json_to_be_sent.toString());                        
+                        // intent.putExtra("data",payload.toString());     
+                        appModule.android.foregroundActivity.startActivityForResult(intent, self.FONEPAISAPG_RET_CODE);             
+                        
+                    }, function (e) {
+                        console.log('error in api');
+                        console.dir("Error occurred " + e);
+                    });
+                } catch (e) {
+                    console.dir(e);
+                }
 
-                let signed_msg = this.getSignedMsg(signed_ip);
-                json_to_be_sent.put("sign", signed_msg);
-                json_to_be_sent.put("Environment", self.Test_Environment);  //mandatory   //Change it based on the environment you are using
+                // let signed_msg = this.getSigned(signed_ip);
+                
+                // payload["sign"] = signed_msg;
+                payload["Environment"] = self.Test_Environment;  //mandatory   //Change it based on the environment you are using
                 console.log('3');
                 
-                intent.putExtra("data",json_to_be_sent.toString());     
-                appModule.android.foregroundActivity.startActivityForResult(intent, self.FONEPAISAPG_RET_CODE);
+                intent.putExtra("data",payload.toString());     
+                // appModule.android.foregroundActivity.startActivityForResult(intent, self.FONEPAISAPG_RET_CODE);
                    
             } catch(ex) {
                 console.dir(ex);
@@ -66,6 +109,38 @@ export class Fonepaisa extends Common {
         });
     }
 
+    private getSigned(input){
+        console.log('about to start api call');
+        http.request({
+            url: "https://arthseed-dev.clu.pw/sign.php",
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            content: JSON.stringify({ hashinput: input })
+        }).then(function (response) {
+            console.log('success from api');
+            console.dir(response);
+            var result = response.content.toJSON();
+            console.log(result);
+            return response;                
+            
+        }, function (e) {
+            console.log('error in api');
+            console.dir("Error occurred " + e);
+        });
+
+        // fetchModule.fetch("https://6d38de61.ngrok.io/sign.php", {
+        //     method: "POST",
+        //     headers: { "Content-Type": "application/json"},
+        //     body: JSON.stringify(data)
+        // })
+        // .then(r => { return r.json(); }).then(function (r) {
+        //     console.log(r.response);
+
+        //    // localStorage.setItem("redirectUrl", "patients");
+        // }, function(error) {
+        //     console.log(JSON.stringify(error));
+        // })        
+    }
 
     private getSignedMsg (input){
         try {
