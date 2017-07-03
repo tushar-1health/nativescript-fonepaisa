@@ -1,44 +1,35 @@
-import { Observable } from 'data/observable';
-import * as app from 'application';
-import * as dialogs from 'ui/dialogs';
-
-export class Common extends Observable {
-  public message: string;
-
-  constructor() {
-    super();
-    // this.message = Utils.SUCCESS_MSG();
-  }
+export interface PayResult {
+  message: string;
+  code: string;
+  data_sent: string;
+  data_received: string;
 }
 
-export class Utils {
-  public static SUCCESS_MSG(): string {
-    let msg = `Your plugin is working on ${app.android ? 'Android' : 'iOS'}.`;
+export interface CommonPayOptions {
+  API_KEY: string;
+  id: string;
+  merchant_id: string;
+  merchant_display: string;
+  invoice: string;
+  mobile_no: string;
+  email: string;
+  invoice_amt: string;
+  note: string;
+  payment_types: string;
+  addnl_info: string;
+  sign: string;
+  Environment: string;
+ }
 
-    setTimeout(() => {
-      dialogs.alert(`${msg} For real. It's really working :)`).then(() => console.log(`Dialog closed.`));
-    }, 2000);
+export interface IOS extends CommonPayOptions {}
 
-    return msg;
-  }
+export interface Android extends CommonPayOptions { }
+
+export interface PayOptions extends IOS, Android {
+  IOS?: IOS;
+  Android?: Android;
 }
-
 
 export declare class Fonepaisa {
-    // private _observer;
-    // private _observerActive;
-    // private _currentVolume;
-    // private _scanner;
-    // constructor();
-    // private _hasCameraPermission;
-    // private _hasDeniedCameraPermission;
-    // private _addVolumeObserver;
-    // private _removeVolumeObserver;
-    // private _enableTorch;
-    // private _disableTorch;
-    // available(): Promise<boolean>;
-    // hasCameraPermission(): Promise<boolean>;
-    // requestCameraPermission(): Promise<boolean>;
-    // stop(): Promise<any>;
-    pay(arg);
+    pay(arg): Promise<PayResult>;
 }
