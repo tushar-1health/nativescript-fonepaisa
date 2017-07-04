@@ -13,16 +13,13 @@ export class Fonepaisa {
         let self = this;
     }
 
-    public pay(arg): Promise<PayResult> {
-        console.log('in Fonepaisa@pay');
-        
+    public pay(arg): Promise<PayResult> {        
         let self = this;
         return new Promise((resolve, reject) => { 
             let intent: android.content.Intent = new android.content.Intent(
                 appModule.android.foregroundActivity,fonepaisa.com.fonepaisapg_sdk.fonePaisaPG["class"]);
                         
             let API_KEY = arg.API_KEY;
-            console.log('fonepaisa.com.fonepaisapg_sdk.fonePaisaPG 1');
             let json_to_be_sent = new org.json.JSONObject();
             try {
                 json_to_be_sent.put("id", arg.id);    // Mandatory .. FPTEST is just for testing it has to be changed before going to production
@@ -67,41 +64,11 @@ export class Fonepaisa {
                         };                        
                         reject(result);
                     }                    
-                    // if (data.requestCode === SCANNER_REQUEST_CODE) {
-                        // self.onPermissionGranted = null;
-                        // if (isContinuous) {
-                        //     if (_onScanReceivedCallback) {
-                        //     self.broadcastManager.unregisterReceiver(_onScanReceivedCallback);
-                        //     _onScanReceivedCallback = undefined;
-                        //     }
-                        // } else {
-                        //     if (data.resultCode === android.app.Activity.RESULT_OK) {
-                        //     let format = data.intent.getStringExtra(com.google.zxing.client.android.Intents.Scan.RESULT_FORMAT);
-                        //     let text = data.intent.getStringExtra(com.google.zxing.client.android.Intents.Scan.RESULT);
-                        //     let result: PayResult = {
-                        //         format: format,
-                        //         text: text
-                        //     };
-                        //     resolve(result);
-                        //     } else {
-                        //     reject("Scan aborted");
-                        //     }
-                        // }
-                    // arg.closeCallback && arg.closeCallback();
                     appModule.android.off('activityResult', onPayResult);
-                    // }
                 };
 
                 appModule.android.on('activityResult', onPayResult);
                 appModule.android.foregroundActivity.startActivityForResult(intent, self.FONEPAISAPG_RET_CODE);
-                // let result: PayResult = {
-                //     format: 'format',
-                //     text: 'text'
-                //   };
-                //   resolve(result);
-                // } else {
-                //   reject("Scan aborted");
-                // }                             
                    
             } catch(ex) {
                 console.dir(ex);
