@@ -5,6 +5,7 @@ var http = require("http");
 export class HelloWorldModel extends Observable {
   public message: string;
   private fonepaisa: Fonepaisa;
+  public amount = 1.00;
 
   constructor() {
     super();
@@ -14,6 +15,7 @@ export class HelloWorldModel extends Observable {
   public pay(){
     let that = this;
     console.log('in component');
+    console.log(this.amount);
     let API_KEY = "08Z1782051U62BY9OUGW4XM67GF2004";
     let payload = {
         API_KEY: API_KEY,
@@ -23,7 +25,7 @@ export class HelloWorldModel extends Observable {
         invoice: new Date().getMilliseconds() + "FP",
         mobile_no: "9664240747",
         email: "",
-        invoice_amt: "1.00",
+        invoice_amt: this.amount,
         Environment: "Test",
         sign: null
     };
