@@ -23,7 +23,7 @@ export class HelloWorldModel extends Observable {
         merchant_id: "FPTEST",
         merchant_display: "fonepaisa",
         invoice: new Date().getMilliseconds() + "FP",
-        mobile_no: "9664240747",
+        mobile_no: "7204853405",
         email: "",
         invoice_amt: this.amount,
         Environment: "Test",
