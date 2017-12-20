@@ -41,7 +41,7 @@ export class Fonepaisa {
                 const onPayResult = (data) => {
                     console.log(">> activity result: @ " + new Date().getTime());
                     console.dir(data.requestCode);
-                    if (data.resultCode === android.app.Activity.RESULT_OK) {
+                    if (data.resultCode == android.app.Activity.RESULT_OK) {
                         let message = data.intent.getStringExtra("resp_msg");
                         let code = data.intent.getStringExtra("resp_code");
                         let data_sent = data.intent.getStringExtra("data_sent");
@@ -52,6 +52,7 @@ export class Fonepaisa {
                             data_sent: data_sent,
                             data_received: data_rec,
                         };
+                        console.log("about to resolve");
                         resolve(result);
                     } else {
                         let message = data.intent.getStringExtra("resp_msg");
@@ -61,7 +62,8 @@ export class Fonepaisa {
                             code: code,
                             data_sent: null,
                             data_received: null,
-                        };                        
+                        };  
+                        console.log("about to reject");                      
                         reject(result);
                     }                    
                     appModule.android.off('activityResult', onPayResult);
@@ -71,6 +73,7 @@ export class Fonepaisa {
                 appModule.android.foregroundActivity.startActivityForResult(intent, self.FONEPAISAPG_RET_CODE);
                    
             } catch(ex) {
+                console.log("log in the catch block");
                 console.dir(ex);
                 return false;
             }
